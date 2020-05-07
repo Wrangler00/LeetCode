@@ -36,3 +36,16 @@ public:
         return (2* accumulate(ss.begin(),ss.end(),initialSum))-accumulate(nums.begin(),nums.end(),initialSum);
     }
 };
+
+//XOR solution c++
+class Solution {
+public:
+    int singleNumber(vector<int>& nums) {
+        int ans=0;
+        for(int i=0;i<nums.size();i++){
+            ans^=nums[i];
+        }
+        
+        return ans;
+    }
+};
