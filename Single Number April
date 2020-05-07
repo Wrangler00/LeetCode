@@ -24,3 +24,15 @@ var singleNumber = function(nums) {
         if(mapp[i]===1) return i;
     }
 };
+
+
+//c++ (math solution)
+class Solution {
+public:
+    int singleNumber(vector<int>& nums) {
+        int initialSum = 0;
+        set<int> ss (nums.begin(),nums.end());
+        
+        return (2* accumulate(ss.begin(),ss.end(),initialSum))-accumulate(nums.begin(),nums.end(),initialSum);
+    }
+};
