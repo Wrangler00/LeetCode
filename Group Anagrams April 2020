@@ -45,3 +45,32 @@ public:
         return ans;
     }
 };
+
+
+//javascript
+
+/**
+ * @param {string[]} strs
+ * @return {string[][]}
+ */
+var groupAnagrams = function(strs) {
+    let hashmap = {};
+    strs.map(st=>{
+        let tempStr = "";
+        let charCount = new Array(26).fill(0);
+        for(let i=0;i<st.length;i++){
+            ++charCount[st[i].charCodeAt(0)-'a'.charCodeAt()];
+        }
+        
+        for(let i=0;i<26;i++)
+            tempStr += "#"+charCount[i];
+        
+        if(hashmap[tempStr]){
+            hashmap[tempStr].push(st);
+        }else{
+            hashmap[tempStr] = [st];
+        }
+    });
+    
+    return Object.keys(hashmap).map(i=>hashmap[i]);
+};
