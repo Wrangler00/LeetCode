@@ -15,7 +15,7 @@ Note:
 You may assume that all inputs are consist of lowercase letters a-z.
 All inputs are guaranteed to be non-empty strings.
 
-//c++ TRIE
+//c TRIE
 typedef struct tt{
     struct tt *children[26];
     bool isEndOfWord;
@@ -103,3 +103,95 @@ void trieFree(Trie* obj) {
  
  * trieFree(obj);
 */
+
+
+//c++ solution
+
+class TrieNode {
+public:
+    // Initialize your data structure here.
+    TrieNode() {
+        isEndOfWord = false;
+        for (int i=0;i<26;i++){
+            children[i] = NULL;
+        }
+    }
+    bool isEndOfWord;
+    TrieNode* children[26];
+};
+
+class Trie {
+private:
+    int ALPHABET_SIZE = 26;
+    TrieNode* root;
+public:
+    /** Initialize your data structure here. */
+    Trie() {
+        root = new TrieNode();
+    }
+    
+    /** Inserts a word into the trie. */
+    void insert(string word) {
+        int len = word.length();
+        TrieNode *pNode = root;
+        
+        for(int i=0;i<len;i++){
+            int index = word[i]-'a';
+            
+            if(!pNode->children[index]){
+                pNode->children[index] = new TrieNode();
+            }
+            
+            pNode = pNode->children[index];
+        }
+        
+        pNode->isEndOfWord = true;
+    }
+    
+    /** Returns if the word is in the trie. */
+    bool search(string word) {
+        int len = word.length();
+        
+        TrieNode *pNode = root;
+        
+        for(int i=0;i<len;i++){
+            int index = word[i]-'a';
+            
+            if(!pNode->children[index]){
+                return false;
+            }
+            
+            pNode = pNode->children[index];
+        }
+        
+        
+        return (pNode!=NULL && pNode->isEndOfWord);
+    }
+    
+    /** Returns if there is any word in the trie that starts with the given prefix. */
+    bool startsWith(string prefix) {
+        int len = prefix.length();
+        TrieNode *pNode = root;
+        
+        for(int i=0;i<len;i++){
+            int index = prefix[i]-'a';
+            
+            if(!pNode->children[index]){
+                return false;
+            }
+            
+            pNode = pNode->children[index];
+        }
+        
+        
+        return true;
+    }
+};
+
+/**
+ * Your Trie object will be instantiated and called as such:
+ * Trie* obj = new Trie();
+ * obj->insert(word);
+ * bool param_2 = obj->search(word);
+ * bool param_3 = obj->startsWith(prefix);
+ */
