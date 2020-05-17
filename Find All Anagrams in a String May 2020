@@ -1,0 +1,51 @@
+Given a string s and a non-empty string p, find all the start indices of p's anagrams in s.
+
+Strings consists of lowercase English letters only and the length of both strings s and p will not be larger than 20,100.
+
+The order of output does not matter.
+
+//c++ O(nk) solution
+
+class Solution {
+private:
+    const int NUM_OF_CHARS = 26;
+public:
+    bool checkCount(array<int,26> a,array<int,26> b){
+        for(int i=0;i<NUM_OF_CHARS;i++){
+            if(a[i] != b[i])
+                return false;
+        }
+        
+        return true;
+    }
+    
+    vector<int> findAnagrams(string s, string p) {
+        
+        array<int,26> charCount = {0};
+        array<int,26> temp = {0};
+        vector<int> ans;
+        const int _size = s.size(),p_size = p.size();
+        int i;
+        
+        if(p_size>_size)
+            return ans;
+        
+        for(i=0;i<p_size;i++){
+            ++charCount[p[i]-'a'];
+            ++temp[s[i]-'a'];
+        }
+        
+        if(checkCount(charCount,temp))
+            ans.push_back(0);
+        
+        for(i=p_size;i<_size;i++){
+            --temp[s[i-p_size]-'a'];
+            ++temp[s[i]-'a'];
+            
+            if(checkCount(charCount,temp))
+                ans.push_back(i-p_size+1);
+        }
+        
+        return ans;
+    }
+};
