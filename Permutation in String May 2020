@@ -1,0 +1,113 @@
+Given two strings s1 and s2, write a function to return true if s2 contains the permutation of s1. In other words, one of the first string's permutations is the substring of the second string.
+
+ 
+
+Example 1:
+
+Input: s1 = "ab" s2 = "eidbaooo"
+Output: True
+Explanation: s2 contains one permutation of s1 ("ba").
+Example 2:
+
+Input:s1= "ab" s2 = "eidboaoo"
+Output: False
+ 
+
+Note:
+
+The input strings only contain lower case letters.
+The length of both given strings is in range [1, 10,000].
+
+//c++ (sliding window solution)
+
+class Solution {
+private:
+const int NUM_OF_CHARS = 26;
+public:
+    bool checkInclusion(string s1, string s2) {
+        int s1_size = s1.length();
+        int s2_size = s2.length();
+        
+        if(s2_size<s1_size)
+            return false;
+        
+        array<int,26> s1_c = {0};
+        array<int,26> s2_c = {0};
+        
+        for(int i=0;i<s1_size;i++){
+            ++s1_c[s1[i]-'a'];
+            ++s2_c[s2[i]-'a'];
+        }
+        
+        if(s2_c == s1_c)
+            return true;
+        
+        for(int i=s1_size;i<s2_size;i++){
+            ++s2_c[s2[i]-'a'];
+            --s2_c[s2[i-s1_size]-'a'];
+            
+            if(s2_c == s1_c)
+                return true;    
+        }
+        
+        return false;
+    }
+};
+
+
+//c++ (Optimized sliding window solution)
+
+class Solution {
+private:
+const int NUM_OF_CHARS = 26;
+public:
+    bool checkInclusion(string s1, string s2) {
+        int s1_size = s1.length();
+        int s2_size = s2.length();
+        
+        if(s2_size<s1_size)
+            return false;
+        
+        array<int,26> s1_c = {0};
+        array<int,26> s2_c = {0};
+        int count = 0;
+        
+        for(int i=0;i<s1_size;i++){
+            ++s1_c[s1[i]-'a'];
+            ++s2_c[s2[i]-'a'];
+        }
+        
+        for(int i=0;i<NUM_OF_CHARS;i++){
+            if(s1_c[i] == s2_c[i])
+                ++count;
+        }
+        
+        // cout<<count<<endl;
+        if(count == NUM_OF_CHARS)
+            return true;
+        
+        for(int i=s1_size;i<s2_size;i++){
+            int r = s2[i]-'a',l = s2[i-s1_size]-'a';
+            
+            ++s2_c[r];
+            
+            if(s2_c[r] == s1_c[r])
+                 ++count;
+            else if(s2_c[r] == s1_c[r]+1)
+                --count;
+            
+            --s2_c[l];
+            if(s2_c[l] == s1_c[l])
+                 ++count;
+            else if(s2_c[l] == s1_c[l]-1)
+                --count;
+            
+            if(count == 26)
+                return true;
+            
+            // cout<<count<<endl;
+        }
+        
+        return false;
+    }
+};
