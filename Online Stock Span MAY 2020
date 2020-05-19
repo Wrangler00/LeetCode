@@ -1,0 +1,69 @@
+//c++ my try TLE
+typedef struct st{
+    int val;
+    int count;
+    struct st *next;
+    struct st *prev;
+} StockSpanner;
+
+StockSpanner* TAIL = NULL;
+
+StockSpanner* stockSpannerCreate() {
+    StockSpanner* stock = (StockSpanner *)malloc(sizeof(StockSpanner));
+    
+    stock->val = NULL;
+    stock->count = NULL;
+    stock->next = NULL;
+    stock->prev = NULL;
+    return stock;
+}
+
+int stockSpannerNext(StockSpanner* obj, int price) {
+    int count=1;
+    StockSpanner *pNode = TAIL;
+    StockSpanner *cNode;
+    
+    if(obj->next == NULL){
+        obj->val = price;
+        obj->next = stockSpannerCreate();
+        obj->count = count;
+        TAIL = obj;
+        // printf("FIRST %d\n",price);
+        return count;
+    }
+    
+    while(pNode != NULL){
+        printf("Ambuja %d %d \n",pNode->val,price);
+        if(pNode->val<= price){
+            ++count;
+        }else{
+            break;
+        }
+        cNode = pNode;
+        pNode = pNode->prev;
+    }
+    
+    TAIL->next = stockSpannerCreate();
+    TAIL->next->prev = pNode == NULL ? cNode : pNode;
+    TAIL = TAIL->next;
+    
+    TAIL->val = price;
+    TAIL->next = stockSpannerCreate();
+    
+    return count;
+}
+
+void stockSpannerFree(StockSpanner* obj) {
+    if(obj->next != NULL){
+        stockSpannerFree(obj->next);
+    }
+    free(obj);
+}
+
+/**
+ * Your StockSpanner struct will be instantiated and called as such:
+ * StockSpanner* obj = stockSpannerCreate();
+ * int param_1 = stockSpannerNext(obj, price);
+ 
+ * stockSpannerFree(obj);
+*/
