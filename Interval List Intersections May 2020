@@ -155,3 +155,105 @@ public:
         return ans;
     }
 };
+
+
+//c++ single isIntersection check
+
+class Solution {
+private:
+    vector<vector<int>> ans;
+    struct node{
+        int l_interval;
+        int r_interval;
+        int max_endpoint;
+        struct node *left, *right;
+    };
+    struct node *root;
+public:
+    void insertSegmentNode(vector<int> &a){
+        if(!root){
+            root = (node *)malloc(sizeof(node));
+            root->l_interval = a[0];
+            root->r_interval = a[1];
+            root->max_endpoint = a[1];
+            
+            root->left = NULL;
+            root->right = NULL;
+            return;
+        }
+        
+        struct node *pNode = root;
+        
+        while(true){
+            pNode->max_endpoint = max(a[1],pNode->max_endpoint);
+            if(a[0]<=pNode->l_interval){
+                if(!pNode->left){
+                    pNode->left = (node *)malloc(sizeof(node));
+                    pNode = pNode->left;
+                    
+                    pNode->l_interval = a[0];
+                    pNode->r_interval = a[1];
+                    pNode->max_endpoint = a[1];
+                    
+                    pNode->left = NULL;
+                    pNode->right = NULL;
+                    break;
+                }
+                pNode = pNode->left;
+                
+            }else if(a[0]>pNode->l_interval){
+                if(!pNode->right){
+                    pNode->right = (node *)malloc(sizeof(node));
+                    pNode = pNode->right;
+                    
+                    pNode->l_interval = a[0];
+                    pNode->r_interval = a[1];
+                    pNode->max_endpoint = a[1];
+                    
+                    pNode->left = NULL;
+                    pNode->right = NULL;
+                    
+                    break;
+                }
+                pNode = pNode->right;
+            }
+        }
+        
+        return;
+    }
+    
+    void isIntersects(struct node *pNode,vector<int> &b){
+        int lo = max(pNode->l_interval,b[0]);
+        int hi = min(pNode->r_interval,b[1]);
+        
+        if(lo<=hi){
+            ans.push_back({lo,hi});
+        }
+        return;
+    }
+    
+    void searchOverlappingIntervals(struct node *pNode,vector<int> &b){
+        if(!pNode)
+            return;
+        
+        isIntersects(pNode, b);
+        
+        if(!pNode->left)
+            searchOverlappingIntervals(pNode->right,b);
+        else if(pNode->left->max_endpoint <= b[0])
+            searchOverlappingIntervals(pNode->right,b);
+        else searchOverlappingIntervals(pNode->left,b);
+        
+        return;
+    }
+    
+    void buildSegmentTree(vector<vector<int>>& A){
+        for(auto a:A)   insertSegmentNode(a);
+    }
+    
+    vector<vector<int>> intervalIntersection(vector<vector<int>>& A, vector<vector<int>>& B) {
+        buildSegmentTree(A);
+        for(auto b: B)  searchOverlappingIntervals(root,b);
+        return ans;
+    }
+};
